@@ -329,6 +329,21 @@ local QuestExceptions = {
   [45563] = "Weekly", -- The Shrouded Coin - Mists of Pandaria Timewalking
 }
 
+local DungeonAbbreviations = {
+	[1041] = "HoV",
+	[1042] = "MoS",
+	[1045] = "VotW",
+	[1046] = "EoA",
+	[1065] = "Nelth's Lair",
+	[1066] = "VH",
+	[1067] = "DhT",
+	[1079] = "Arcway",
+	[1081] = "BRH",
+	[1087] = "CoS",
+	[1115] = "L Kara",
+	[1146] = "CoEN",
+}
+
 local WoDSealQuests = {
   [36058] = "Weekly",  -- Seal of Dwarven Bunker
   -- Seal of Ashran quests
@@ -652,61 +667,62 @@ vars.defaultDB = {
     R8ClassColor = true,
   },
   Tooltip = {
-    ReverseInstances = false,
-    ShowExpired = false,
-    ShowHoliday = true,
-    ShowRandom = true,
-    CombineWorldBosses = false,
-    CombineLFR = true,
-    TrackDailyQuests = true,
-    TrackWeeklyQuests = true,
-    ShowCategories = false,
-    CategorySpaces = false,
-    RowHighlight = 0.1,
-    Scale = 1,
-    FitToScreen = true,
-    NewFirst = true,
-    RaidsFirst = true,
-    NumberFormat = true,
+    AbbreviateDungeons = true,
+	AugmentBonus = true,
     CategorySort = "EXPANSION", -- "EXPANSION", "TYPE"
-    ShowSoloCategory = false,
-    ShowHints = true,
-    ReportResets = true,
-    LimitWarn = true,
-    HistoryText = false,
-    ShowServer = false,
-    ServerSort = true,
-    ServerOnly = false,
+    CategorySpaces = false,
+    CombineLFR = true,
+    CombineWorldBosses = false,
     ConnectedRealms = "group",
-    SelfFirst = true,
-    SelfAlways = false,
-    TrackLFG = true,
-    TrackDeserter = true,
-    TrackSkills = true,
-    TrackFarm = true,
-    TrackBonus = false,
-    TrackPlayed = true,
-    AugmentBonus = true,
-    CurrencyValueColor = true,
-    Currency776 = false, -- Warforged Seals
-    Currency738 = false, -- Lesser Charm of Good Fortune
-    Currency823 = false,  -- Apexis Crystal
-    Currency824 = false,  -- Garrison Resources
     Currency1101= false,  -- Oil
-    Currency994 = false, -- Seal of Tempered Fate
     Currency1129= false, -- Seal of Inevitable Fate
+    Currency1149= true,  -- Sightless Eye
     Currency1155= true,  -- Ancient Mana
     Currency1166= true,  -- Timewarped Badge
     Currency1191= true,  -- Valor Points
     Currency1220= true,  -- Order Resources
     Currency1226= false, -- Nethershards
     Currency1273= true,  -- Seal of Broken Fate
-    Currency1149= true,  -- Sightless Eye
-    CurrencyMax = false,
+    Currency738 = false, -- Lesser Charm of Good Fortune
+    Currency776 = false, -- Warforged Seals
+    Currency823 = false,  -- Apexis Crystal
+    Currency824 = false,  -- Garrison Resources
+    Currency994 = false, -- Seal of Tempered Fate
     CurrencyEarned = true,
+    CurrencyMax = false,
+    CurrencyValueColor = true,
+    DailyWorldQuest = true,
+    FitToScreen = true,
+    HistoryText = false,
+    LimitWarn = true,
     MythicKey = true,
     MythicKeyBest = true,
-    DailyWorldQuest = true,
+    NewFirst = true,
+    NumberFormat = true,
+    RaidsFirst = true,
+    ReportResets = true,
+    ReverseInstances = false,
+    RowHighlight = 0.1,
+    Scale = 1,
+    SelfAlways = false,
+    SelfFirst = true,
+    ServerOnly = false,
+    ServerSort = true,
+    ShowCategories = false,
+    ShowExpired = false,
+    ShowHints = true,
+    ShowHoliday = true,
+    ShowRandom = true,
+    ShowServer = false,
+    ShowSoloCategory = false,
+    TrackBonus = false,
+    TrackDailyQuests = true,
+    TrackDeserter = true,
+    TrackFarm = true,
+    TrackLFG = true,
+    TrackPlayed = true,
+    TrackSkills = true,
+    TrackWeeklyQuests = true,
   },
   Instances = { }, 	-- table key: "Instance name"; value:
   -- Show: boolean
@@ -2829,29 +2845,12 @@ function core:RefreshMythicKeyInfo()
         else
           _,_,_,color = GetItemQualityColor(1)
         end
-        if vars.db.Tooltip.DebugMode then
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[1]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[2]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[3]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[4]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[5]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[6]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[7]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[8]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[9]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[10]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[11]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[12]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[13]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[14]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[15]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[16]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[17]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[18]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[19]))
-          DEFAULT_CHAT_FRAME:AddMessage(tostring(KeyInfo[20]))
-        end
-        t.MythicKey.name = C_ChallengeMode.GetMapInfo(mapID)
+
+		if vars.db.Tooltip.DungeonShort then
+			t.MythicKey.name = addon:AbbreviateDungeon(mapID)
+		else
+			t.MythicKey.name = C_ChallengeMode.GetMapInfo(mapID)
+		end
         t.MythicKey.color = color
         t.MythicKey.level = mapLevel
         t.MythicKey.ResetTime = addon:GetNextWeeklyResetTime()

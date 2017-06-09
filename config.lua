@@ -236,13 +236,13 @@ function module:BuildOptions()
             name = L["Instance limit in broker"],
             order = 4.8,
           },
-          DebugMode = {
+          AbbreviateDungeons = {
             type = "toggle",
-            name = L["Debug Mode"],
+            name = L["Shorten Dungeons"],
+			desc = L["Abbreviate dungeon names in Keystones"],
             order = 4.8,
           },
-
-          CategoriesHeader = {
+		  CategoriesHeader = {
             order = 11,
             type = "header",
             name = L["Categories"],
