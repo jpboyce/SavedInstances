@@ -221,6 +221,10 @@ local QuestExceptions = {
   [48910] = "Weekly", -- Supplying Krokuun
   [48911] = "Weekly", -- Void Inoculation
   [48912] = "Weekly", -- Supplying the Antoran Campaign
+
+  -- Battle for Azeroth
+  [54166] = "Weekly", -- Set Sail for Horde Characters
+  [54167] = "Weekly", -- Set Sail for Alliance Characters
 }
 
 local WoDSealQuests = {
